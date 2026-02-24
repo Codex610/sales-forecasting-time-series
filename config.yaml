@@ -1,0 +1,74 @@
+# config.yaml
+# -----------
+# Central config for the Rossmann Sales Forecasting project.
+# Import with: import yaml; cfg = yaml.safe_load(open('config.yaml'))
+
+# ── Paths ─────────────────────────────────────────────────────────────────────
+paths:
+  raw:       data/raw/
+  processed: data/processed/
+  models:    models/
+  reports:   reports/
+  figures:   reports/figures/
+
+# ── Data ──────────────────────────────────────────────────────────────────────
+data:
+  train_file: train.csv
+  store_file: store.csv
+  split_ratio: 0.80           # 80% train, 20% validation
+
+# ── SARIMAX ───────────────────────────────────────────────────────────────────
+sarimax:
+  store_id: 1
+  order: [2, 1, 2]            # (p, d, q)
+  exog_features:
+    - Promo
+    - SchoolHoliday
+    - IsPublicHoliday
+    - IsChristmas
+    - IsMonday
+    - IsSaturday
+    - IsMonthEnd
+    - IsQ4
+    - BeforeHoliday
+    - AfterHoliday
+    - Promo_x_Monday
+    - Promo_x_SchoolHol
+    - fourier_weekly_sin_7_1
+    - fourier_weekly_cos_7_1
+    - fourier_annual_sin_365_1
+    - fourier_annual_cos_365_1
+
+# ── Random Forest ─────────────────────────────────────────────────────────────
+random_forest:
+  n_estimators:    200
+  max_depth:       10
+  min_samples_leaf: 10
+  max_features:    sqrt
+  random_state:    42
+
+# ── XGBoost ───────────────────────────────────────────────────────────────────
+xgboost:
+  n_estimators:    500
+  learning_rate:   0.05
+  max_depth:       6
+  subsample:       0.8
+  colsample_bytree: 0.8
+  reg_alpha:       0.1
+  reg_lambda:      1.0
+  random_state:    42
+
+# ── Results (actual) ──────────────────────────────────────────────────────────
+results:
+  sarimax:
+    mae:  489.65
+    rmse: 653.29
+    scope: Store 1 only
+  random_forest:
+    mae:  736.83
+    rmse: 1098.15
+    scope: All 1115 stores
+  xgboost:
+    mae:  644.67
+    rmse: 933.08
+    scope: All 1115 stores
